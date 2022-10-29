@@ -1,0 +1,96 @@
+{
+    "nodes": {
+      "entries": [
+        {
+          "name": "controller-alpha",
+          "role": "controller",
+          "instance_type": "t2.large",
+          "kind": "aws"
+        },
+        {
+          "name": "worker-alpha",
+          "role": "worker",
+          "instance_type": "t2.large",
+          "kind": "aws"
+        }
+      ],
+      "deploymentTargetConfiguration": {
+        "aws": {
+          "instance_type": "t2.medium"
+        }
+      }
+    },
+    "applications": {
+      "airflow": {
+        "targetRevision": "1.7.0",
+        "destinationNamespace": "airflow",
+        "repoURL": "https://airflow.apache.org",
+        "chart": "airflow",
+        "values": {
+          "dags": {
+            "gitSync": {
+              "enabled": true,
+              "repo": "https://github.com/polyseam/demo-dag-bag",
+              "branch": "main",
+              "wait": 70,
+              "subPath": "dags"
+            }
+          },
+          "logs": {
+            "persistence": {
+              "size": "15Gi"
+            }
+          },
+          "createUserJob": {
+            "useHelmHooks": false
+          },
+          "migrateDatabaseJob": {
+            "useHelmHooks": false
+          }
+        }
+      }
+    },
+    "cluster": {
+      "my-secret": {
+        "kind": "Secret",
+        "apiVersion": "v1",
+        "metadata": {
+          "name": "my-secret",
+          "namespace": "default"
+        },
+        "stringData": {
+          "my-secret-key": "$.cndi.secrets.my-secret-key"
+        }
+      },
+      "ingress": {
+        "apiVersion": "networking.k8s.io/v1",
+        "kind": "Ingress",
+        "metadata": {
+          "name": "airflow-ingress",
+          "namespace": "airflow"
+        },
+        "spec": {
+          "rules": [
+            {
+              "http": {
+                "paths": [
+                  {
+                    "path": "/",
+                    "pathType": "Prefix",
+                    "backend": {
+                      "service": {
+                        "name": "airflow-webserver",
+                        "port": {
+                          "number": 8080
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    }
+  }

@@ -1,0 +1,26 @@
+{
+  "resource": {
+    "aws_instance": {
+      "controller-alpha": [
+        {
+          "ami": "ami-0c1704bac156af62c",
+          "instance_type": "t2.large",
+          "availability_zone": "us-east-1a",
+          "tags": {
+            "Name": "controller-alpha",
+            "CNDINodeRole": "controller"
+          },
+          "ebs_block_device": [
+            {
+              "device_name": "/dev/sda1",
+              "volume_size": 80,
+              "volume_type": "gp3",
+              "delete_on_termination": false
+            }
+          ],
+          "user_data": "${templatefile(\"controller_bootstrap_cndi.sh.tftpl\",{ \"bootstrap_token\": \"${local.bootstrap_token}\", \"git_repo\": \"${local.git_repo}\", \"git_password\": \"${local.git_password}\", \"git_username\": \"${local.git_username}\", \"sealed_secrets_private_key\": \"${local.sealed_secrets_private_key}\", \"sealed_secrets_public_key\": \"${local.sealed_secrets_public_key}\" })}"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,8 @@
+
+cndi/terraform/.terraform*
+cndi/terraform/*.tfstate*
+cndi/terraform/.terraform/
+
+.keys/
+
+.env
