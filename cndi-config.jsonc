@@ -59,7 +59,8 @@
           "namespace": "default"
         },
         "stringData": {
-          "my-secret-key": "$.cndi.secrets.my-secret-key"
+          
+          "my-secret-key": "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"
         }
       },
       "ingress": {
